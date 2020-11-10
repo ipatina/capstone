@@ -1,0 +1,9 @@
+purchaseId	sessionId	campaignId	channelId	purchaseTime	billingCost	isConfirmed
+p5	u3_e10_p5	cmp2	Yandex Ads	2019-01-01 2:15:05	75	TRUE
+p4	u3_e10_p4	cmp2	Yandex Ads	2019-01-01 2:13:05	50.2	TRUE
+	u3_e1	cmp2	Facebook Ads			
+p6	u3_e19_p6	cmp2	Yandex Ads	2019-01-02 13:03:00	99	FALSE
+p1	u1_e1_p1	cmp1	Google Ads	2019-01-01 0:01:05	100.5	TRUE
+p2	u2_e1_p2	cmp1	Yandex Ads	2019-01-01 0:03:10	200	TRUE
+p3	u3_e5_p3	cmp1	Google Ads	2019-01-01 1:12:15	300	FALSE
+	u2_e6	cmp2	Yandex Ads			
