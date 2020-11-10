@@ -13,4 +13,8 @@
 
 
 ### Run
-Run `CapstoneProject$.main` to get aggregations results 
+Run `CapstoneProject$.main` to get aggregations results.
+
+
+### Run tests
+Run maven command: `mvn clean test` to execute tests.
