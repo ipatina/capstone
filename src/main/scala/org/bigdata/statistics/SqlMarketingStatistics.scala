@@ -12,6 +12,7 @@ class SqlMarketingStatistics(implicit spark: SparkSession) extends MarketingStat
         |where isConfirmed = true
         |group by campaignId
         |order by sum(billingCost) desc
+        |limit 10
         |""".stripMargin
 
     runQuery(df, sqlExpression)

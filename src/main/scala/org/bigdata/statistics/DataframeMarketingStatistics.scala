@@ -13,6 +13,7 @@ class DataframeMarketingStatistics extends MarketingStatistics {
       .agg(sum(BILLING_COST).as(BILLING_COST))
       .orderBy(col(BILLING_COST).desc)
       .select(CAMPAIGN_ID)
+      .limit(10)
   }
 
   override def channelPerformanceByCampaign(df: DataFrame): DataFrame = {
