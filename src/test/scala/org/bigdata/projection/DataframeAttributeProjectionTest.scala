@@ -16,7 +16,7 @@ class DataframeAttributeProjectionTest extends TestBase {
 
   @Test
   def test_getProjection(): Unit = {
-    testGetProjection(DataframeAttributeProjection(), spark)
+    testGetProjection(DataframeAttributeProjection(), conf)
   }
 
   @Test

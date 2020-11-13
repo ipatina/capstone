@@ -3,18 +3,19 @@ package org.bigdata.projection
 import java.sql.Timestamp
 
 import org.apache.spark.sql.SparkSession
-import org.bigdata.utils.ReadUtils
+import org.bigdata.utils.ConfigUtils.Config
+import org.bigdata.utils.IOUtils
 
 object AttributeProjectionTestCases {
 
-  def testGetProjection(ap: AttributeProjection, spark: SparkSession): Unit = {
+  def testGetProjection(ap: AttributeProjection, conf: Config)(implicit spark: SparkSession): Unit = {
     import spark.implicits._
 
-    val clickstream = ReadUtils.readTsv(spark, ReadUtils.CLICKSTREAM_SAMPLE_PATH)
-    val purchaseDetails = ReadUtils.readTsv(spark, ReadUtils.PURCHASES_SAMPLE_PATH)
+    val clickstream = IOUtils.readTsv(conf.clickstreamSamplePath, conf.tsvOptions)
+    val purchaseDetails = IOUtils.readTsv(conf.purchasesSamplePath, conf.tsvOptions)
 
     val result = ap.getProjection(clickstream, purchaseDetails)
-    val expected = ReadUtils.readTsv(spark, ReadUtils.TEST_PATH)
+    val expected = IOUtils.readTsv(conf.attributeProjectionPath, conf.tsvOptions)
 
     val resultCollected = result
       .as[(String, String, String, String, Timestamp, Option[Double], Option[Boolean])].collect()

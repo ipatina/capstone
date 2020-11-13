@@ -1,12 +1,10 @@
 package org.bigdata.statistics
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
-class SqlMarketingStatistics(spark: SparkSession) extends MarketingStatistics {
-  import spark.implicits._
-
+class SqlMarketingStatistics(implicit spark: SparkSession) extends MarketingStatistics {
   private val VIEW_NAME = "inputDf"
 
-  override def topTenCampaigns(df: DataFrame): Array[String] = {
+  override def topTenCampaigns(df: DataFrame): DataFrame = {
     val sqlExpression =
       s"""
         |select campaignId
@@ -16,10 +14,10 @@ class SqlMarketingStatistics(spark: SparkSession) extends MarketingStatistics {
         |order by sum(billingCost) desc
         |""".stripMargin
 
-    runQuery(df, sqlExpression).as[String].take(10)
+    runQuery(df, sqlExpression)
   }
 
-  override def channelPerformanceByCampaign(df: DataFrame): Array[(String, String)] = {
+  override def channelPerformanceByCampaign(df: DataFrame): DataFrame = {
     val sqlExpression =
       s"""
          |with channelCount as (
@@ -34,7 +32,7 @@ class SqlMarketingStatistics(spark: SparkSession) extends MarketingStatistics {
          |where rank = 1
          |""".stripMargin
 
-    runQuery(df, sqlExpression).as[(String, String)].collect()
+    runQuery(df, sqlExpression)
   }
 
   private def runQuery(df: DataFrame, sql: String): DataFrame = {
@@ -44,5 +42,5 @@ class SqlMarketingStatistics(spark: SparkSession) extends MarketingStatistics {
 }
 
 object SqlMarketingStatistics {
-  def apply(spark: SparkSession): SqlMarketingStatistics = new SqlMarketingStatistics(spark)
+  def apply()(implicit spark: SparkSession): SqlMarketingStatistics = new SqlMarketingStatistics()
 }

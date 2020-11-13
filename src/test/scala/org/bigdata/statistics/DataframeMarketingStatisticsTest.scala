@@ -8,12 +8,11 @@ class DataframeMarketingStatisticsTest extends TestBase {
 
   @Test
   def test_topTenCampaigns(): Unit = {
-    testTopTenCampaigns(DataframeMarketingStatistics(spark), spark)
+    testTopTenCampaigns(DataframeMarketingStatistics(), conf)
   }
 
   @Test
   def test_channelPerformanceByCampaign(): Unit = {
-    testChannelPerformanceByCampaign(DataframeMarketingStatistics(spark), spark)
+    testChannelPerformanceByCampaign(DataframeMarketingStatistics(), conf)
   }
-
 }

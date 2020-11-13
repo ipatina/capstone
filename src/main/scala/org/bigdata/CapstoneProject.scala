@@ -1,34 +1,49 @@
 package org.bigdata
 
 import org.apache.spark.sql.SparkSession
-import org.bigdata.projection.DataframeAttributeProjection
-import org.bigdata.statistics.DataframeMarketingStatistics
-import org.bigdata.utils.ReadUtils
+import org.bigdata.projection.{AggregatorAttributeProjection, DataframeAttributeProjection}
+import org.bigdata.statistics.{DataframeMarketingStatistics, SqlMarketingStatistics}
+import org.bigdata.utils.ConfigUtils._
 
 object CapstoneProject {
 
   def main(args: Array[String]): Unit = {
-    val spark = SparkSession.builder().appName("Capstone").master("local").getOrCreate()
+    implicit val spark: SparkSession =
+      SparkSession
+        .builder()
+        .appName("Capstone")
+        .getOrCreate()
 
-    // Read datasets
-    val clickstream = ReadUtils.readTsv(spark, ReadUtils.CLICKSTREAM_SAMPLE_PATH)
-    val purchaseDetails = ReadUtils.readTsv(spark, ReadUtils.PURCHASES_SAMPLE_PATH)
+    val actionType = getSparkConf(ACTION_TYPE_CONF)
+    val actionImpl = getSparkConf(ACTION_IMPLEMENTATION_CONF, defaultVal = Some("default"))
 
-    // Transform datasets into view
-    val input = new DataframeAttributeProjection().getProjection(clickstream, purchaseDetails)
-
-    val statistics = new DataframeMarketingStatistics(spark)
-
-    // Task 1 result
-    val topTenCampaigns = statistics.topTenCampaigns(input)
-    // Task 2 result
-    val channelPerformanceByCampaign = statistics.channelPerformanceByCampaign(input)
-
-    // Write results to console output
-    println(topTenCampaigns.mkString("Array(", ", ", ")"))
-    println(channelPerformanceByCampaign.mkString("Array(", ", ", ")"))
+    val action = getActionFromConf(actionType, actionImpl)
+    action.doAction()
 
     spark.close()
   }
 
+  /**
+   * Get Action instance from configuration provided in spark-submit.
+   * For Action implementation DataframeAttributeProjection and DataframeMarketingStatistics
+   * will be used by default.
+   * @throws RuntimeException in case of wrong actionType
+   */
+  private def getActionFromConf(actionType: String, actionImpl: String)
+                               (implicit spark: SparkSession): Action =
+    actionType match {
+      case BUILD_PROJECTION =>
+        val impl = actionImpl match {
+          case AGGREGATOR_IMPL => AggregatorAttributeProjection()
+          case _ => DataframeAttributeProjection()
+        }
+        new BuildProjectionAction(impl)
+      case BUILD_STATISTICS =>
+        val impl = actionImpl match {
+          case SQL_IMPL => SqlMarketingStatistics()
+          case _ => DataframeMarketingStatistics()
+        }
+        new BuildStatisticsAction(impl)
+      case _ => throw new RuntimeException(s"No Action found for $ACTION_TYPE_CONF=$actionType")
+    }
 }

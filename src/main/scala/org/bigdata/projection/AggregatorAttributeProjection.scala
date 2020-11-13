@@ -5,7 +5,7 @@ import org.apache.spark.sql.{DataFrame, Dataset, SparkSession}
 import org.bigdata.utils.AttributeUtils._
 import org.bigdata.utils.ColumnConstants._
 
-class AggregatorAttributeProjection(spark: SparkSession) extends AttributeProjection {
+class AggregatorAttributeProjection(implicit spark: SparkSession) extends AttributeProjection {
 
   import AggregatorAttributeProjection._
   import spark.implicits._
@@ -27,14 +27,14 @@ class AggregatorAttributeProjection(spark: SparkSession) extends AttributeProjec
 object AggregatorAttributeProjection {
   private val RESULT = "result"
 
-  def transformAggregatedResult(result: Dataset[(String, Seq[Out])]): DataFrame =
+  private[projection] def transformAggregatedResult(result: Dataset[(String, Seq[Out])]): DataFrame =
     result.withColumn(RESULT, explode(col(RESULT)))
       .select(col(RESULT)(SESSION_ID).as(SESSION_ID),
         col(RESULT)(PURCHASE_ID).as(PURCHASE_ID),
         col(RESULT)(CAMPAIGN_ID).as(CAMPAIGN_ID),
         col(RESULT)(CHANNEL_ID).as(CHANNEL_ID))
 
-  implicit class DataframeImplicits(df: DataFrame) {
+  private[projection] implicit class DataframeImplicits(df: DataFrame) {
 
     def resolveAttributes: DataFrame =
       df.filter(col(ATTRIBUTES).isNotNull)
@@ -59,5 +59,6 @@ object AggregatorAttributeProjection {
     }
   }
 
-  def apply(spark: SparkSession): AggregatorAttributeProjection = new AggregatorAttributeProjection(spark)
+  def apply()(implicit spark: SparkSession): AggregatorAttributeProjection =
+    new AggregatorAttributeProjection()
 }

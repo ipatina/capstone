@@ -8,11 +8,11 @@ class SqlMarketingStatisticsTest extends TestBase {
 
   @Test
   def test_topTenCampaigns(): Unit = {
-    testTopTenCampaigns(SqlMarketingStatistics(spark), spark)
+    testTopTenCampaigns(SqlMarketingStatistics(), conf)
   }
 
   @Test
   def test_channelPerformanceByCampaign(): Unit = {
-    testChannelPerformanceByCampaign(SqlMarketingStatistics(spark), spark)
+    testChannelPerformanceByCampaign(SqlMarketingStatistics(), conf)
   }
 }

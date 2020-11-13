@@ -1,0 +1,8 @@
+clickstreamSamplePath: src/main/resources/clickstream_sample.tsv
+purchasesSamplePath: src/main/resources/purchases_sample.tsv
+attributeProjectionPath: output/attribute_projection
+statisticsRootPath: output/statistics
+tsvOptions:
+  header: true
+  inferSchema: true
+  delimiter: "\t"

@@ -2,9 +2,11 @@ package org.bigdata
 
 import org.apache.spark.sql.SparkSession
 import org.bigdata.TestBase.createSparkSession
+import org.bigdata.utils.ConfigUtils.{Config, getConfig}
 
 class TestBase {
-  lazy val spark: SparkSession = createSparkSession
+  implicit val spark: SparkSession = createSparkSession
+  val conf: Config = getConfig(fromResources = true)
 }
 
 object TestBase {
@@ -12,6 +14,7 @@ object TestBase {
     SparkSession
       .builder()
       .appName("Capstone tests")
+      .config("spark.capstone.config.path", "config.yaml")
       .master("local")
       .getOrCreate()
 }

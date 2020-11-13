@@ -1,22 +1,21 @@
 package org.bigdata.statistics
-import org.apache.spark.sql.{DataFrame, SparkSession}
+
+import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.expressions.Window
 import org.apache.spark.sql.functions.{col, count, rank, sum}
 import org.bigdata.utils.ColumnConstants._
 
-class DataframeMarketingStatistics(spark: SparkSession) extends MarketingStatistics {
-  import spark.implicits._
+class DataframeMarketingStatistics extends MarketingStatistics {
 
-  override def topTenCampaigns(df: DataFrame): Array[String] = {
+  override def topTenCampaigns(df: DataFrame): DataFrame = {
     df.filter(col(IS_CONFIRMED))
       .groupBy(col(CAMPAIGN_ID))
       .agg(sum(BILLING_COST).as(BILLING_COST))
       .orderBy(col(BILLING_COST).desc)
       .select(CAMPAIGN_ID)
-      .as[String].take(10)
   }
 
-  override def channelPerformanceByCampaign(df: DataFrame): Array[(String, String)] = {
+  override def channelPerformanceByCampaign(df: DataFrame): DataFrame = {
     val RANK_COLUMN = "rank"
     val CHANNEL_ID_COUNT = "channelIdCount"
 
@@ -27,10 +26,9 @@ class DataframeMarketingStatistics(spark: SparkSession) extends MarketingStatist
       .withColumn(RANK_COLUMN, rank().over(window))
       .filter(col(RANK_COLUMN) === 1)
       .select(col(CAMPAIGN_ID), col(CHANNEL_ID))
-      .as[(String, String)].collect()
   }
 }
 
 object DataframeMarketingStatistics {
-  def apply(spark: SparkSession): DataframeMarketingStatistics = new DataframeMarketingStatistics(spark)
+  def apply(): DataframeMarketingStatistics = new DataframeMarketingStatistics()
 }

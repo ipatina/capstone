@@ -10,7 +10,7 @@ class DataframeAttributeProjection extends AttributeProjection {
   import DataframeAttributeProjection._
 
   override def getProjection(clickstream: DataFrame, purchaseDetails: DataFrame): DataFrame = {
-    val cleaned = cleanAttributesColumn(clickstream)
+    val cleaned = cleanAttributesColumn(clickstream).cache()
 
     val campaigns = cleaned
       .prepareCampaignForJoin

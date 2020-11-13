@@ -12,7 +12,7 @@ class AggregatorAttributeProjectionTest extends TestBase {
 
   @Test
   def test_getProjection(): Unit = {
-    testGetProjection(AggregatorAttributeProjection(spark), spark)
+    testGetProjection(AggregatorAttributeProjection(), conf)
   }
 
   @Test
