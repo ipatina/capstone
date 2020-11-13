@@ -17,8 +17,11 @@
 
 
 ### Run
-The application uses spark version 2.4.7. Run spark-submit, example:
-`spark-submit --master local --conf "spark.capstone.config.path=/full/path/to/config.yaml" --conf "spark.capstone.action.type=build_statistics" --conf "spark.capstone.action.implementation=sql" path/to/capstone-1.0-SNAPSHOT.jar`
+The application uses spark version 2.4.7. 
+Run spark-submit with option "spark.capstone.action.type=build_projection" to get results for Task 1, example:
+`spark-submit --master local --conf "spark.capstone.config.path=/full/path/to/config.yaml" --conf "spark.capstone.action.type=build_projection" path/to/capstone-1.0-SNAPSHOT.jar`
+Run spark-submit with option "spark.capstone.action.type=build_statistics" to get results for Task 2, example:
+`spark-submit --master local --conf "spark.capstone.config.path=/full/path/to/config.yaml" --conf "spark.capstone.action.type=build_projection" path/to/capstone-1.0-SNAPSHOT.jar`
 
 Required configurations:
 `spark.capstone.config.path` - path config.yaml, see the example in src/main/resources/config.yaml
